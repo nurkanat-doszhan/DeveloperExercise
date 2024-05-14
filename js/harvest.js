@@ -113,7 +113,7 @@ function displayList(array, uniqId) {
             <span class="product_item_price_text">Цена:</span>
             <br>
             <span class="product_item_price_cost">${formatter(a.price)} <span class="product_item_price_par">₸</span> </span>
-            <a class="product_item_price_btn" data-code="${a.code}">В корзину</a>
+            <a class="product_item_price_btn" data-code="${a.code}" style="user-select: none;">В корзину</a>
         </div>
         `;
 
@@ -121,4 +121,84 @@ function displayList(array, uniqId) {
 
     });
 
+}
+let addToCardButtonClick = document.getElementsByClassName('product_item_price_btn');
+for (let i = 0; i < addToCardButtonClick.length; i++) {
+    addToCardButtonClick[i].onclick = function() {
+        console.log(i);
+        console.log(data[i].code)
+        let item = localStorage.getItem('all');
+        let newItem = [data[i].title, data[i].img, data[i].price, data[i].code];
+        localStorage.setItem('all', [item, `(${newItem})`])
+        // if (localStorage.key() ==)
+        // console.log(localStorage.getItem(data[i].code))
+    }
+}
+
+let sortButton = document.getElementsByClassName("sorting_option")[0];
+sortButton.onclick = function() {
+    for (let i = 0; i < sortButton.children.length; i++) {
+        if (sortButton.children[i].classList.contains('selected')) {
+            switch (sortButton.children[i].classList.contains('selected')) {
+                case i == 0: sort(0); break;
+                case i == 1: sort(1); break;
+                case i == 2: sort(2); break;
+                case i == 3: sort(3); break;
+                default: break;
+            }
+        }
+    }
+}
+
+function sort(x) {
+    var nodeList = document.querySelectorAll('.product_item');
+    var itemsArray = [];
+    var parent = nodeList[0].parentNode;
+    for (var i = 0; i < nodeList.length; i++) {
+        itemsArray.push(parent.removeChild(nodeList[i]));
+    }
+    if (x == 0) {
+        itemsArray.sort(function(nodeA, nodeB) {
+            var textA = nodeA.querySelector('.product_item_price_cost').textContent;
+            var textB = nodeB.querySelector('.product_item_price_cost').textContent;
+            var numberA = parseInt(textA);
+            var numberB = parseInt(textB);
+            if (numberA < numberB) return -1;
+            if (numberA > numberB) return 1;
+            return 0;
+        }).forEach(function(node) { parent.appendChild(node) });
+    }
+    if (x == 1) {
+        itemsArray.sort(function(nodeA, nodeB) {
+            var textA = nodeA.querySelector('.product_item_price_cost').textContent;
+            var textB = nodeB.querySelector('.product_item_price_cost').textContent;
+            var numberA = parseInt(textA);
+            var numberB = parseInt(textB);
+            if (numberA < numberB) return 1;
+            if (numberA > numberB) return -1;
+            return 0;
+        }).forEach(function(node) { parent.appendChild(node) });
+    }
+    if (x == 2) {
+        itemsArray.sort(function(nodeA, nodeB) {
+            var textA = nodeA.querySelector('.product_item_text').textContent;
+            var textB = nodeB.querySelector('.product_item_text').textContent;
+            let codeA = textA.split('code: ').pop().split('\n')[0]
+            let codeB = textB.split('code: ').pop().split('\n')[0]
+            var numberA = parseInt(codeA);
+            var numberB = parseInt(codeB);
+            if (numberA < numberB) return -1;
+            if (numberA > numberB) return 1;
+            return 0;
+        }).forEach(function(node) { parent.appendChild(node) });
+    }
+    if (x == 3) {
+        itemsArray.sort(function(nodeA, nodeB) {
+            var textA = nodeA.querySelector('.product_item_text').textContent;
+            var textB = nodeB.querySelector('.product_item_text').textContent;
+            if (textA < textB) return -1;
+            if (textA > textB) return 1;
+            return 0;
+        }).forEach(function(node) { parent.appendChild(node) });
+    }
 }
